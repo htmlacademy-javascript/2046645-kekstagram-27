@@ -1,14 +1,15 @@
 import {getRandomInRange, getRandomArrayElement} from './util.js';
 
 const PICTURES_COUNT = 25;
-const AVATAR_COUNT = 6;
+const AVATARS_COUNT = 6;
 
 const LikesCount = {
   MIN: 15,
   MAX: 200,
 };
 
-const commentLines = [
+const COMMENT_LENGTH = 15;
+const COMMENT_LINES = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
   'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
@@ -17,7 +18,7 @@ const commentLines = [
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!',
 ];
 
-const descriptions = [
+const DESCRIPTIONS = [
   'Летний отдых на юге. #Астрахань #жара #лето',
   'Вайя, что за красота! #природа #отдых #chill #nature',
   'Здесь очень необычная подача блюда, и при этом безумно вкусная. #вкуснаяеда #food',
@@ -30,27 +31,27 @@ const descriptions = [
   'Отлично',
 ];
 
-const names = ['Михаил', 'Мага', 'Дима', 'Мария', 'Саша', 'Елена'];
+const NAMES = ['Михаил', 'Мага', 'Дима', 'Мария', 'Саша', 'Елена'];
 
 const createMessage = () =>
   Array.from({ length: getRandomInRange(1, 2) }, () =>
-    getRandomArrayElement(commentLines)
+    getRandomArrayElement(COMMENT_LINES)
   ).join(' ');
 
-const createComment = (index) => ({
-  id: index,
-  avatar: `img/avatar-${getRandomInRange(1, AVATAR_COUNT)}.svg`,
-  message: createMessage(),
-  name: getRandomArrayElement(names),
+const createComment = (id) => ({
+  id,
+  avatar: `img/avatar-${getRandomInRange(1, AVATARS_COUNT)}.svg`,
+  message: createMessage,
+  name: getRandomArrayElement(NAMES),
 });
 
-const createPicture = (index) => ({
-  id: index,
-  url: `photos/${index}.jpg`,
-  description: getRandomArrayElement(descriptions),
+const createPicture = (id) => ({
+  id,
+  url: `photos/${id}.jpg`,
+  description: getRandomArrayElement(DESCRIPTIONS),
   likes: getRandomInRange(LikesCount.MIN, LikesCount.MAX),
-  Comments: Array.from(
-    { length: getRandomInRange(0, 20) },
+  comments: Array.from(
+    { length: getRandomInRange(0, COMMENT_LENGTH) },
     (_, commentIndex) => createComment(commentIndex + 1)
   ),
 });
@@ -59,7 +60,5 @@ const getPictures = () =>
   Array.from({ length: PICTURES_COUNT }, (_, pictureIndex) =>
     createPicture(pictureIndex + 1)
   );
-
-getPictures();
 
 export {getPictures};
