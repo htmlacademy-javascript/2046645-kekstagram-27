@@ -1,23 +1,27 @@
 import {getEscapeEvent} from './util.js';
 
-const MAX_COMMENT = 5;
-const bigPictureNode = document.querySelector('.big-picture');
-const bigPictureImgNode = document.querySelector('.big-picture__img');
-const socialCommentCountNode = document.querySelector('.social__comment-count');
-const body = document.querySelector('body');
-const commentsListNode = document.querySelector('.social__comments');
-const commentElementNode = commentsListNode.querySelector('.social__comment');
-const commentsLoaderNode = document.querySelector('.comments-loader');
-const bigPictureCloseNode = bigPictureNode.querySelector('.big-picture__cancel');
+const bigPicture = document.querySelector('.big-picture');
+const bigPictureImg = document.querySelector('.big-picture__img');
+const socialCommentCount = document.querySelector('.social__comment-count');
+const body = document.body;
+const commentsList = document.querySelector('.social__comments');
+const commentElement = commentsList.querySelector('.social__comment');
+const commentsLoader = document.querySelector('.comments-loader');
+const bigPictureCancel = bigPicture.querySelector('.big-picture__cancel');
+const likesCount = bigPicture.querySelector('.likes-count');
+const commentsCount = bigPicture.querySelector('.comments-count');
+const socialCaption = bigPicture.querySelector('.social__caption');
+
 let commentsArrayData = [];
+const COMMENTS_STEP = 5;
 let commentsCounter = 5;
 
 const getBigPictureComment = (comment) => {
-  const commentItemNode = commentElementNode.cloneNode(true);
-  commentItemNode.querySelector('.social__picture').src = comment.avatar;
-  commentItemNode.querySelector('.social__picture').alt = comment.name;
-  commentItemNode.querySelector('.social__text').textContent = comment.message;
-  return commentItemNode;
+  const commentItem = commentElement.cloneNode(true);
+  commentItem.querySelector('.social__picture').src = comment.avatar;
+  commentItem.querySelector('.social__picture').alt = comment.name;
+  commentItem.querySelector('.social__text').textContent = comment.message;
+  return commentItem;
 };
 
 const createCommentsFragment = (commentsArray) => {
@@ -26,57 +30,57 @@ const createCommentsFragment = (commentsArray) => {
     const patternComment = getBigPictureComment(comment);
     fragment.appendChild(patternComment);
   });
-  commentsListNode.appendChild(fragment);
+  commentsList.appendChild(fragment);
 };
 
-const showBigPicture = (bigPhoto) => {
+const showBigPicture = ({url, likes, description, comments}) => {
   body.classList.add('modal-open');
-  commentsListNode.innerHTML = '';
-  bigPictureImgNode.querySelector('img').src = bigPhoto.url;
-  bigPictureNode.querySelector('.likes-count').textContent = bigPhoto.likes;
-  bigPictureNode.querySelector('.comments-count').textContent = bigPhoto.comments.length;
-  bigPictureNode.querySelector('.social__caption').textContent = bigPhoto.description;
-  bigPictureNode.classList.remove('hidden');
-  document.addEventListener('keydown', onBigPictureEscPress);
-  bigPictureCloseNode.addEventListener('click', onBigPictureCloseClick);
-  socialCommentCountNode.firstChild.textContent = `${MAX_COMMENT} из `;
-  commentsArrayData = bigPhoto.comments.slice();
-  if (commentsArrayData.length <= MAX_COMMENT) {
-    socialCommentCountNode.firstChild.textContent = `${bigPhoto.comments.length} из `;
+  commentsList.innerHTML = '';
+  bigPictureImg.src = url;
+  likesCount.textContent = likes;
+  commentsCount.textContent = comments.length;
+  socialCaption.textContent = description;
+  bigPicture.classList.remove('hidden');
+  document.addEventListener('keydown', onDocumentKeydown);
+  bigPictureCancel.addEventListener('click', onBigPictureCloseClick);
+  socialCommentCount.firstChild.textContent = `${COMMENTS_STEP} из `;
+  commentsArrayData = comments.slice();
+  if (commentsArrayData.length <= COMMENTS_STEP) {
+    socialCommentCount.firstChild.textContent = `${comments.length} из `;
     createCommentsFragment(commentsArrayData);
-    commentsLoaderNode.classList.add('hidden');
+    commentsLoader.classList.add('hidden');
   }
-  if (commentsArrayData.length >= MAX_COMMENT) {
-    createCommentsFragment(commentsArrayData.slice(0, MAX_COMMENT));
-    commentsLoaderNode.classList.remove('hidden');
-    commentsLoaderNode.addEventListener('click', onCommentsLoaderClick);
+  if (commentsArrayData.length >= COMMENTS_STEP) {
+    createCommentsFragment(commentsArrayData.slice(0, COMMENTS_STEP));
+    commentsLoader.classList.remove('hidden');
+    commentsLoader.addEventListener('click', onCommentsLoaderClick);
   }
 };
 
 const getCurentCommentCount = (comments) => comments ? comments.children.length : 0;
 
 function onCommentsLoaderClick () {
-  createCommentsFragment(commentsArrayData.slice(commentsCounter, commentsCounter += MAX_COMMENT));
+  createCommentsFragment(commentsArrayData.slice(commentsCounter, commentsCounter += COMMENTS_STEP));
   if (commentsCounter >= commentsArrayData.length) {
-    commentsLoaderNode.classList.add('hidden');
-    commentsLoaderNode.removeEventListener('click', onCommentsLoaderClick);
-    commentsCounter = MAX_COMMENT;
+    commentsLoader.classList.add('hidden');
+    commentsLoader.removeEventListener('click', onCommentsLoaderClick);
+    commentsCounter = COMMENTS_STEP;
   }
-  socialCommentCountNode.firstChild.textContent = `${getCurentCommentCount(commentsListNode)} из `;
+  socialCommentCount.firstChild.textContent = `${getCurentCommentCount(commentsList)} из `;
   if (commentsArrayData.length === 0) {
-    commentsLoaderNode.classList.add('hidden');
-    commentsLoaderNode.removeEventListener('click', onCommentsLoaderClick);
+    commentsLoader.classList.add('hidden');
+    commentsLoader.removeEventListener('click', onCommentsLoaderClick);
   }
 }
 
 const closeBigPicture = () => {
-  bigPictureNode.classList.add('hidden');
+  bigPicture.classList.add('hidden');
   body.classList.remove('modal-open');
-  document.removeEventListener('keydown', onBigPictureEscPress);
-  bigPictureCloseNode.removeEventListener('click', onBigPictureCloseClick);
+  document.removeEventListener('keydown', onDocumentKeydown);
+  bigPictureCancel.removeEventListener('click', onBigPictureCloseClick);
 };
 
-function onBigPictureEscPress (evt) {
+function onDocumentKeydown (evt) {
   getEscapeEvent(evt, closeBigPicture);
 }
 
