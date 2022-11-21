@@ -11,8 +11,8 @@ const checkArrValuesNotRepeat = (arr, isStringsArr = false) => {
 const clearInputs = (container) => {
   const inputsWithoutDefaultVal = container.querySelectorAll('input:not([value])');
   const allTextAreas = container.querySelectorAll('textarea');
-  inputsWithoutDefaultVal.forEach((input) => (input.value = ''));
-  allTextAreas.forEach((textArea) => (textArea.value = ''));
+  inputsWithoutDefaultVal.forEach((input) => {input.value = '';});
+  allTextAreas.forEach((textArea) => {textArea.value = '';});
 };
 
 const showErrorAlert = (message) => {
@@ -49,12 +49,12 @@ const getRandomArrValues = (arr, valuesQuantity) => {
   return result;
 };
 
-function debounce (callback, timeoutDelay) {
+const debounce = (callback, timeoutDelay) => {
   let timeoutId;
   return (...rest) => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
   };
-}
+};
 
 export { checkMaxLength, checkArrValuesNotRepeat, clearInputs, showErrorAlert, getRandomArrValues, debounce };
