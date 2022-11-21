@@ -1,29 +1,29 @@
 import { sendData } from './api.js';
-import { successMessageTemplate, errorMessageTemplate, successMessageCloseBtn, errorMessageCloseBtn, showUploadMessage } from './message.js';
+import { successMessageTemplate, errorMessageTemplate, successMessageCloseButton, errorMessageCloseButton, showUploadMessage } from './message.js';
 import { closeUploadPopup } from './form.js';
 import { uploadForm, pristine } from './validation.js';
 
-const uploadSubmitBtn = document.querySelector('.img-upload__submit');
+const uploadSubmit = document.querySelector('.img-upload__submit');
 
 
 const blockSubmitButton = () => {
-  uploadSubmitBtn.disabled = true;
-  uploadSubmitBtn.textContent = 'Публикуем...';
+  uploadSubmit.disabled = true;
+  uploadSubmit.textContent = 'Публикуем...';
 };
 
 const unblockSubmitButton = () => {
-  uploadSubmitBtn.disabled = false;
-  uploadSubmitBtn.textContent = 'Опубликовать';
+  uploadSubmit.disabled = false;
+  uploadSubmit.textContent = 'Опубликовать';
 };
 
 const onSuccess = () => {
   closeUploadPopup();
-  showUploadMessage(successMessageTemplate, successMessageCloseBtn);
+  showUploadMessage(successMessageTemplate, successMessageCloseButton);
   unblockSubmitButton();
 };
 
 const onFail = () => {
-  showUploadMessage(errorMessageTemplate, errorMessageCloseBtn);
+  showUploadMessage(errorMessageTemplate, errorMessageCloseButton);
   unblockSubmitButton();
 };
 

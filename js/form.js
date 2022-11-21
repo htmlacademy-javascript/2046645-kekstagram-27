@@ -1,10 +1,7 @@
-import { uploadForm, clearPristineErrors } from './validation.js';
-import { resetPhotoScale } from './scale.js';
-import { resetPhotoEffect, resetPhotoEffectSlider } from './effect.js';
+import { uploadReset } from './upload-image.js';
 
-const uploadFileInput = uploadForm.querySelector('#upload-file');
-const uploadPopup = uploadForm.querySelector('.img-upload__overlay');
-const uploadClosePopupBtn = uploadForm.querySelector('#upload-cancel');
+const uploadPopup = document.querySelector('.img-upload__overlay');
+const uploadClosePopupButton = document.querySelector('#upload-cancel');
 
 
 const showModal = (modal) => {
@@ -17,32 +14,25 @@ const closeModal = (modal) => {
   document.body.classList.remove('modal-open');
 };
 
-const addPopupCloseHandlers = (closeBtn, closeClickHandler, closeKeydownHandler) => {
-  closeBtn.addEventListener('click', closeClickHandler);
+const addPopupCloseHandlers = (closeButton, closeClickHandler, closeKeydownHandler) => {
+  closeButton.addEventListener('click', closeClickHandler);
   document.addEventListener('keydown', closeKeydownHandler);
 };
 
-const removePopupCloseHandlers = (closeBtn, closeClickHandler, closeKeydownHandler) => {
-  closeBtn.removeEventListener('click', closeClickHandler);
+const removePopupCloseHandlers = (closeButton, closeClickHandler, closeKeydownHandler) => {
+  closeButton.removeEventListener('click', closeClickHandler);
   document.removeEventListener('keydown', closeKeydownHandler);
 };
 
 const closeUploadPopup = () => {
   closeModal(uploadPopup);
-  removePopupCloseHandlers(uploadClosePopupBtn, closePopupClickHandler, closePopupKeydownHandler);
-
-  uploadFileInput.value = '';
-  uploadForm.reset();
-
-  clearPristineErrors();
-  resetPhotoScale();
-  resetPhotoEffect();
-  resetPhotoEffectSlider();
+  removePopupCloseHandlers(uploadClosePopupButton, closePopupClickHandler, closePopupKeydownHandler);
+  uploadReset();
 };
 
 const showUploadPopup = () => {
   showModal(uploadPopup);
-  addPopupCloseHandlers(uploadClosePopupBtn, closePopupClickHandler, closePopupKeydownHandler);
+  addPopupCloseHandlers(uploadClosePopupButton, closePopupClickHandler, closePopupKeydownHandler);
 };
 
 function closePopupClickHandler() {
@@ -52,11 +42,8 @@ function closePopupClickHandler() {
 function closePopupKeydownHandler(evt) {
   if (evt.code === 'Escape' && document.activeElement.getAttribute('type') !== 'text' && document.activeElement.tagName !== 'TEXTAREA') {
     closeUploadPopup();
+    showUploadPopup();
   }
 }
 
-uploadFileInput.addEventListener('change', () => {
-  showUploadPopup();
-});
-
-export {showModal, closeModal, addPopupCloseHandlers, removePopupCloseHandlers, uploadPopup, closeUploadPopup, closePopupKeydownHandler };
+export {showModal, closeModal, addPopupCloseHandlers, removePopupCloseHandlers, uploadPopup, closeUploadPopup, showUploadPopup, closePopupKeydownHandler };
