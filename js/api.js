@@ -1,5 +1,8 @@
+const INCOMING_SERVER_ADDRESS = 'https://23.javascript.pages.academy/kekstagram/data';
+const OUTGOING_SERVER_ADDRESS = 'https://23.javascript.pages.academy/kekstagram';
+
 const getData = (onSuccess, onFail) => {
-  fetch('https://27.javascript.pages.academy/kekstagram/data')
+  fetch(INCOMING_SERVER_ADDRESS)
     .then((response) => response.json())
     .then((pictures) => {
       onSuccess(pictures);
@@ -9,7 +12,7 @@ const getData = (onSuccess, onFail) => {
 
 const sendData = (onSuccess, onFail, body) => {
   fetch(
-    'https://27.javascript.pages.academy/kekstagram',
+    OUTGOING_SERVER_ADDRESS,
     {
       method: 'POST',
       body,
